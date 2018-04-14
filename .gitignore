@@ -1,0 +1,26 @@
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac crap
+.DS_Store
+
+#### tod stuff
+
+# emacs
+*~
+
+# c build results
+*.o
+*.so
+*.dylib
+
+# java build results
+*.class
+thingm_blink1_Blink1.h
+
+# the build dir
+build
