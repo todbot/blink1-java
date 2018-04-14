@@ -68,14 +68,14 @@ LIBTARGET = libBlink1.jnilib
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
 CFLAGS += -arch i386 -arch x86_64
-CFLAGS += -pthread
-CFLAGS += -I../blink1-tool/hidapi/hidapi 
-OBJS = ../blink1-tool/hidapi/mac/hid.o
+#CFLAGS += -pthread
+CFLAGS += -I blink1-tool/hidapi/hidapi 
+OBJS = blink1-tool/hidapi/mac/hid.o
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../blink1-tool/hiddata.o
+OBJS = blink1-tool/hiddata.o
 OPT_HOME := /opt/local/bin
 CFLAGS += `$(OPT_HOME)/libusb-config --cflags`
 LIBS   += `$(OPT_HOME)/libusb-config --libs`
@@ -86,9 +86,9 @@ JAVAINCLUDEDIR = /System/Library/Frameworks/JavaVM.framework/Headers
 JAVANATINC = -I $(JAVAINCLUDEDIR)/./
 JAVAINCLUDE = -I $(JAVAINCLUDEDIR)
 
-OS_CFLAGS = -g -O2 -D_BSD_SOURCE -bundle -std=gnu99  $(USBFLAGS) 
+OS_CFLAGS = -g -O2 -D_BSD_SOURCE -std=gnu99  $(USBFLAGS) 
 #OS_CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
-OS_LDFLAGS =  -Wl,-search_paths_first -framework JavaVM -framework IOKit -framework CoreFoundation $(USBLIBS) 
+OS_LDFLAGS =  -bundle -Wl,-search_paths_first -framework JavaVM -framework IOKit -framework CoreFoundation $(USBLIBS) 
 endif
 
 #################  Windows  ##################################################
@@ -99,13 +99,13 @@ USBLIBS   = -lhid -lsetupapi
 
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
-CFLAGS += -I../blink1-tool/hidapi/hidapi 
-OBJS = ../blink1-tool/hidapi/windows/hid.o
+CFLAGS += -I blink1-tool/hidapi/hidapi 
+OBJS = blink1-tool/hidapi/windows/hid.o
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../blink1-tool/hiddata.o
+OBJS = blink1-tool/hiddata.o
 endif
 
 # this must match your Java install
@@ -129,15 +129,15 @@ LIBTARGET = libBlink1.so
 
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
-CFLAGS += -I../blink1-tool/hidapi/hidapi 
-OBJS = ../blink1-tool/hidapi/libusb/hid.o
+CFLAGS += -I blink1-tool/hidapi/hidapi 
+OBJS = blink1-tool/hidapi/libusb/hid.o
 CFLAGS += `pkg-config libusb-1.0 --cflags` -fPIC
 LIBS   += `pkg-config libusb-1.0 --libs` -lrt -lpthread -ldl
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../blink1-tool/hiddata.o
+OBJS = blink1-tool/hiddata.o
 CFLAGS += `pkg-config libusb --cflags` -fPIC
 LIBS   += `pkg-config libusb --libs` 
 endif
@@ -158,10 +158,10 @@ endif
 
 
 # now construct normal env vars based on OS-specific ones
-INCLUDES = -I. -I../blink1-tool 
+INCLUDES = -I. -I blink1-tool 
 INCLUDES += $(JAVAINCLUDE) $(JAVANATINC) 
 
-OBJS += ../blink1-tool/blink1-lib.o  nativeBlink1.o 
+OBJS += blink1-tool/blink1-lib.o  nativeBlink1.o 
 
 CFLAGS  += $(OS_CFLAGS) -O -Wall -std=gnu99  $(INCLUDES)
 LDFLAGS += $(OS_LDFLAGS) 
@@ -173,6 +173,7 @@ all: help
 
 help:
 	@echo "This Makefile has no default rule. Use one of the following:"
+	@echo "make prep ...... check out needed submodule"
 	@echo "make javac ..... to build all java classes"
 	@echo "make jni ....... to build JNI stubs"
 	@echo "make compile ....to build the C code" 
@@ -180,6 +181,10 @@ help:
 	@echo "make processing. to build the processing library (for current arch)"
 	@echo "make clean ..... to clean all built files"
 	@echo "make javadoc ... to make the javadoc"
+
+prep:
+	git submodule update --init
+	mkdir -p build
 
 javac:
 #	javac -target $(JAVA_VER) thingm/blink1/Blink1.java	
@@ -190,7 +195,7 @@ jni:
 	javah -jni thingm.blink1.Blink1
 
 clean-blink1lib:
-	make -C ../blink1-tool clean
+	make -C blink1-tool clean
 
 # the "libprep" is to pull out the libusb.a into its own dir, for static build
 #libprep:
@@ -198,9 +203,9 @@ clean-blink1lib:
 #	cp `libusb-config --exec-prefix`/lib/libusb.a $(LIBUSBA_DIR)/$(LIBUSBA)
 
 #	$(CC)  -o $(LIBTARGET) $(CFLAGS) $(LDFLAGS) $(OBJ)  -lc
-compile: msg clean-blink1lib $(OBJS)
+compile: msg prep clean-blink1lib javac jni $(OBJS)
 	$(CC)  -o $(LIBTARGET) $(CFLAGS) $(OBJS) $(LDFLAGS) 
-	mv $(LIBTARGET) ../libraries
+	mv $(LIBTARGET) build
 
 .c.o:
 	$(CC) $(ARCH_COMPILE) $(CFLAGS) -c $*.c -o $*.o
@@ -209,9 +214,9 @@ msg:
 	@echo "building for OS=$(OS)"
 
 # packaging
-jar: javac jni compile
+jar: prep javac jni compile
 	jar -cfm blink1.jar  packaging/Manifest.txt thingm/blink1/*.class
-	mv blink1.jar ../libraries
+	mv blink1.jar build
 
 processing: processinglib
 processinglib: jar
@@ -221,14 +226,14 @@ processinglib: jar
 	mkdir -p blink1/library
 	mkdir -p blink1/examples
 	cp packaging/processing-export.txt blink1/library/export.txt
-	cp -r ../libraries/* blink1/library
+	cp -r build/* blink1/library
 	rm -rf blink1/library/html
 	cp -r ../processing/* blink1/examples
 	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store -r $(LIBZIPNAME) blink1
-	#cp $(LIBZIPNAME) ../libraries
+	cp $(LIBZIPNAME) build
 	@echo
 	@echo "now unzip $(LIBZIPNAME) into ~/Documents/Processing/libraries"
-	@echo "or maybe ln -s \`pwd\`/blink1 ~/Documents/Processing/libraries/blink1"
+#	@echo "or maybe ln -s \`pwd\`/ ~/Documents/Processing/libraries/blink1"
 
 
 javadoc:
