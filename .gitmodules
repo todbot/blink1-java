@@ -1,0 +1,3 @@
+[submodule "blink1-tool"]
+	path = blink1-tool
+	url = git@github.com:todbot/blink1-tool

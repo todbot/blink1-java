@@ -69,13 +69,13 @@ ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
 CFLAGS += -arch i386 -arch x86_64
 CFLAGS += -pthread
-CFLAGS += -I../commandline/hidapi/hidapi 
-OBJS = ../commandline/hidapi/mac/hid.o
+CFLAGS += -I../blink1-tool/hidapi/hidapi 
+OBJS = ../blink1-tool/hidapi/mac/hid.o
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../commandline/hiddata.o
+OBJS = ../blink1-tool/hiddata.o
 OPT_HOME := /opt/local/bin
 CFLAGS += `$(OPT_HOME)/libusb-config --cflags`
 LIBS   += `$(OPT_HOME)/libusb-config --libs`
@@ -99,13 +99,13 @@ USBLIBS   = -lhid -lsetupapi
 
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
-CFLAGS += -I../commandline/hidapi/hidapi 
-OBJS = ../commandline/hidapi/windows/hid.o
+CFLAGS += -I../blink1-tool/hidapi/hidapi 
+OBJS = ../blink1-tool/hidapi/windows/hid.o
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../commandline/hiddata.o
+OBJS = ../blink1-tool/hiddata.o
 endif
 
 # this must match your Java install
@@ -125,19 +125,19 @@ ifeq "$(OS)" "linux"
 LIBTARGET = libBlink1.so
 #USBFLAGS += `pkg-config libusb-1.0 --cflags`
 #USBLIBS  += `pkg-config libusb-1.0 --libs` 
-#OBJS = ../commandline/hidapi/libusb/hid.o
+#OBJS = ../blink1-tool/hidapi/libusb/hid.o
 
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
-CFLAGS += -I../commandline/hidapi/hidapi 
-OBJS = ../commandline/hidapi/libusb/hid.o
+CFLAGS += -I../blink1-tool/hidapi/hidapi 
+OBJS = ../blink1-tool/hidapi/libusb/hid.o
 CFLAGS += `pkg-config libusb-1.0 --cflags` -fPIC
 LIBS   += `pkg-config libusb-1.0 --libs` -lrt -lpthread -ldl
 endif
 
 ifeq "$(USBLIB_TYPE)" "HIDDATA"
 CFLAGS += -DUSE_HIDDATA
-OBJS = ../commandline/hiddata.o
+OBJS = ../blink1-tool/hiddata.o
 CFLAGS += `pkg-config libusb --cflags` -fPIC
 LIBS   += `pkg-config libusb --libs` 
 endif
@@ -158,10 +158,10 @@ endif
 
 
 # now construct normal env vars based on OS-specific ones
-INCLUDES = -I. -I../commandline 
+INCLUDES = -I. -I../blink1-tool 
 INCLUDES += $(JAVAINCLUDE) $(JAVANATINC) 
 
-OBJS += ../commandline/blink1-lib.o  nativeBlink1.o 
+OBJS += ../blink1-tool/blink1-lib.o  nativeBlink1.o 
 
 CFLAGS  += $(OS_CFLAGS) -O -Wall -std=gnu99  $(INCLUDES)
 LDFLAGS += $(OS_LDFLAGS) 
@@ -190,7 +190,7 @@ jni:
 	javah -jni thingm.blink1.Blink1
 
 clean-blink1lib:
-	make -C ../commandline clean
+	make -C ../blink1-tool clean
 
 # the "libprep" is to pull out the libusb.a into its own dir, for static build
 #libprep:
