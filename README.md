@@ -1,10 +1,21 @@
 Java Library for blink(1)
 -------------------------
 
-Note: if you are looking for a ready-to-run library for use in Processing or Java, download:
+If you are looking for a ready-to-run library for use in Processing or Java,
+download it by visiting this repository's releases page:
 
-http://thingm.com/blink1/downloads/blink1-java-processing-lib.zip
+https://github.com/todbot/blink1-java/releases
 
-This directory contains the JNI wrapper code around the native C blink(1) library.
+To try out the library via the command-line, see `blink1-tool-java.sh`.
 
-To build it, see the Makefile.
+To build the library, see the Makefile.
+On most platforms you should be able to do `make jar`.
+
+This code was originally in the https://github.com/todbot/blink1 repository
+but has now been broken out into its own repo.
+
+
+
+
+
+
