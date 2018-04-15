@@ -224,8 +224,8 @@ processinglib: jar
 	cp packaging/processing-export.txt blink1/library/export.txt
 	cp -r build/* blink1/library
 	rm -rf blink1/library/html
-	cp -r ../processing/* blink1/examples
-	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store -r $(LIBZIPNAME) blink1
+	cp -r processing/* blink1/examples
+	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(LIBZIPNAME) blink1
 	cp $(LIBZIPNAME) build
 	@echo
 	@echo "now unzip $(LIBZIPNAME) into ~/Documents/Processing/libraries"
