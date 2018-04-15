@@ -60,11 +60,7 @@ JAVA_HOME:=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
 PATH:=$(JAVA_HOME)/bin:$(PATH)
 
 LIBTARGET = libBlink1.jnilib
-#USBFLAGS = `/opt/local/bin/libusb-legacy-config --cflags`
-#USBLIBS = `/opt/local/bin/libusb-legacy-config --libs | cut -d' ' -f1 | cut -c3- `/libusb-legacy.a
-#USBLIBS +=  `libusb-legacy-config --libs | cut -d' ' -f 3- `
 
-#OBJS = ../commandline/hidapi/mac/hid.o
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
 CFLAGS += -arch i386 -arch x86_64
@@ -108,12 +104,13 @@ CFLAGS += -DUSE_HIDDATA
 OBJS = blink1-tool/hiddata.o
 endif
 
-# this must match your Java install
-#JAVA_HOME = "C:\\Program Files\\Java\\jdk1.7.0_05\\"
-#JAVA_HOME = "C:\\Program Files (x86)\\Java\\jdk1.5.0_21\\"
-JAVA_HOME = "C:\\Program Files\\Java\\jdk1.6.0_45\\"
+ifndef JAVA_HOME
+	${error JAVA_HOME not set. Set it with 'export JAVA_HOME=<java dir>'. It is often C:\\Program Files\\Java\jdk-10.}
+endif
 
-JAVA_NATIVE_INC = -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32
+PATH := $(JAVA_HOME)\\bin:$(PATH)
+
+JAVA_NATIVE_INC = -I"${JAVA_HOME}/include" -I"${JAVA_HOME}/include/win32"
 OS_CFLAGS  = ${JAVA_NATIVE_INC}
 OS_LDFLAGS = -s -shared -Wl,--export-all-symbols -Wl,--kill-a $(USBLIBS)
 
@@ -191,8 +188,7 @@ javac:
 	javac thingm/blink1/Blink1.java	
 
 jni:
-	which javah
-	javah -jni thingm.blink1.Blink1
+	javac -h . thingm/blink1/Blink1.java
 
 clean-blink1lib:
 	make -C blink1-tool clean

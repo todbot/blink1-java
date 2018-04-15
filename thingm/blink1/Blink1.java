@@ -41,7 +41,7 @@ public class Blink1
     Blink1.enumerate(); 
     int count = Blink1.getCount();
 
-    System.out.println("found "+count+ " devices");
+    System.out.println("found "+count+ ((count==1) ? " device":" devices"));
 
     if( count == 0 ) {
       System.out.println("no devices found, would normally exit. continuing for error testing");
