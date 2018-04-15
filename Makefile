@@ -105,7 +105,7 @@ OBJS = blink1-tool/hiddata.o
 endif
 
 ifndef JAVA_HOME
-	${error JAVA_HOME not set. Set it with 'export JAVA_HOME=<java dir>'. It is often C:\\Program Files\\Java\jdk-10.}
+  ${error JAVA_HOME not set. Set it with 'export JAVA_HOME=<java dir>'. It is often C:\\Program Files\\Java\jdk-10.}
 endif
 
 PATH := $(JAVA_HOME)\\bin:$(PATH)
@@ -174,7 +174,7 @@ help:
 	@echo "make javac ..... to build all java classes"
 	@echo "make jni ....... to build JNI stubs"
 	@echo "make compile ....to build the C code" 
-	@echo "make jar ....... to build the distribution jar"
+	@echo "make jar ....... to build the jar <-- run this one"
 	@echo "make processing. to build the processing library (for current arch)"
 	@echo "make clean ..... to clean all built files"
 	@echo "make javadoc ... to make the javadoc"
@@ -199,7 +199,7 @@ clean-blink1lib:
 #	cp `libusb-config --exec-prefix`/lib/libusb.a $(LIBUSBA_DIR)/$(LIBUSBA)
 
 #	$(CC)  -o $(LIBTARGET) $(CFLAGS) $(LDFLAGS) $(OBJ)  -lc
-compile: msg prep clean-blink1lib javac jni $(OBJS)
+compile: msg clean-blink1lib javac jni $(OBJS)
 	$(CC)  -o $(LIBTARGET) $(CFLAGS) $(OBJS) $(LDFLAGS) 
 	mv $(LIBTARGET) build
 
@@ -209,7 +209,7 @@ compile: msg prep clean-blink1lib javac jni $(OBJS)
 msg: 
 	@echo "building for OS=$(OS)"
 
-# packaging
+# the main one
 jar: prep javac jni compile
 	jar -cfm blink1.jar  packaging/Manifest.txt thingm/blink1/*.class
 	mv blink1.jar build
@@ -237,7 +237,7 @@ javadoc:
 #	mkdir -p ../docs/javadoc
 	cd ../docs/javadoc && javadoc -sourcepath ../../java thingm.blink1 && cd ../../java
 
-clean:
+clean: clean-blink1lib
 	rm -f thingm/blink1/*.class 	
 	rm -f libtargets/blink1.jar
 	rm -f $(OBJS)
