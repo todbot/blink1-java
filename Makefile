@@ -165,15 +165,12 @@ LDFLAGS += $(OS_LDFLAGS)
 
 #CC = gcc
 
-#find JNI cmd
-JNICMD=javac -h .
-#JAVAH=$(which javah)
-#if [ -x "$javah" ] ; then
-#	JNICMD="javah -jni"
-#fi
-ifeq (, $(shell which javah))
-	JNICMD=javah -jni
+# find JNI cmd  Sigh. I hate Java.
+JNICMD=javac -h . thingm/blink1/Blink1.java
+ifeq (, $(shell type -p "$(JAVA_HOME)/bin/javah" >2 /dev/null))
+	JNICMD=javah -jni thingm.blink1.Blink1
 endif
+
 
 all: help
 
@@ -197,7 +194,7 @@ javac:
 	javac thingm/blink1/Blink1.java	
 
 jni:
-	$(JNICMD) thingm/blink1/Blink1.java
+	$(JNICMD)
 
 
 clean-blink1lib:
