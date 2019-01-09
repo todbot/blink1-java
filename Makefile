@@ -63,7 +63,7 @@ LIBTARGET = libBlink1.jnilib
 
 ifeq "$(USBLIB_TYPE)" "HIDAPI"
 CFLAGS += -DUSE_HIDAPI
-CFLAGS += -arch i386 -arch x86_64
+#CFLAGS += -arch i386 -arch x86_64
 #CFLAGS += -pthread
 CFLAGS += -I blink1-tool/hidapi/hidapi 
 OBJS = blink1-tool/hidapi/mac/hid.o
