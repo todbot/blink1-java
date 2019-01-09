@@ -165,6 +165,15 @@ LDFLAGS += $(OS_LDFLAGS)
 
 #CC = gcc
 
+#find JNI cmd
+JNICMD=javac -h .
+#JAVAH=$(which javah)
+#if [ -x "$javah" ] ; then
+#	JNICMD="javah -jni"
+#fi
+ifeq (, $(shell which javah))
+	JNICMD=javah -jni
+endif
 
 all: help
 
@@ -188,7 +197,8 @@ javac:
 	javac thingm/blink1/Blink1.java	
 
 jni:
-	javac -h . thingm/blink1/Blink1.java
+	$(JNICMD) thingm/blink1/Blink1.java
+
 
 clean-blink1lib:
 	make -C blink1-tool clean
