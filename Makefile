@@ -167,7 +167,7 @@ LDFLAGS += $(OS_LDFLAGS)
 
 # find JNI cmd  Sigh. I hate Java.
 JNICMD=javac -h . thingm/blink1/Blink1.java
-ifeq (, $(shell type -p "$(JAVA_HOME)/bin/javah" >2 /dev/null))
+ifeq (, $(shell type -p "$(JAVA_HOME)/bin/javah" 2>&1 > /dev/null) )
 	JNICMD=javah -jni thingm.blink1.Blink1
 endif
 
