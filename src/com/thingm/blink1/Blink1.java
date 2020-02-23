@@ -319,6 +319,12 @@ public class Blink1
     return ver;
   }
 
+  /**
+   * @return serial number string of this blink(1)
+   */
+  public String getSerial() {
+    return this.dev.getHidDeviceInfo().getSerialNumberString();
+  }
 
   //-------------------------------------------------------------------------
   // Utilty Class methods
