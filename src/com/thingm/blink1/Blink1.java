@@ -3,12 +3,41 @@
  *
  * Copyright 2008-2020, Tod E. Kurt / @todbot
  *
- * To quickly compile:
- *  javac -cp ../lib/jna-5.5.0.jar:../lib/purejavahidapi.jar:. com/thingm/blink1/Blink1.java* To run:
+ * Mac/Linux:
+ * Compile:
+ *  javac -cp ../lib/jna-5.5.0.jar:../lib/purejavahidapi.jar:. com/thingm/blink1/Blink1.java
+ * Run:
  *  java -cp ../lib/jna-5.5.0.jar:../lib/purejavahidapi.jar:. com.thingm.blink1.Blink1
  * 
- * Must use Java 13 (openjdk on Mac) because of purejavahidapi
+ * Windows:
+ *  Run:
+ *  java -cp "..\lib\purejavahidapi.jar;..\lib\jna-5.5.0.jar;..\lib\jna-platform-5.5.0.jar;." com.thingm.blink1.Blink1
+ * 
+ * NOTES TO MAKE THIS WORK:
  *
+ * Currently there are two issues with `purejavahidapi` to make this work well:
+ *
+ * 1. The inconsistencies in how `setFeatureReport(reportId,buffer,len)` works means
+ *   that the older `setFeatureEport(buffer,len)` (where reportId is the first byte)
+ *   actually works better across Mac & Windows.  BUT, you must edit the file:
+ *   `src/purejavahidapi/macosx/HidDevice.java` to fix a bug of not sending reportId:
+ *    -   return setReport(kIOHIDReportTypeFeature, (byte) 0, data, length);
+ *    +   return setReport(kIOHIDReportTypeFeature, (byte) data[0], data, length);
+ *
+ * 2. This means you need to recompile `purejavahidapi`, which is also good because
+ *    it's currently built with JDK 11+ which makes it less useful in other open
+ *    source tools like Processing (which use Java 8 I think).  
+ *    So to recompile for Java 1.8, edit the file `build-jars.xml`:
+ *     -    <javac srcdir="${src}" destdir="${class}" >
+ *     +    <javac source="1.8" target="1.8" srcdir="${src}" destdir="${class}" includeantruntime="false">
+ * 
+ *    And then to compile, install Ant (`brew install ant`) and run:
+ * 
+ *    `cd purejavahidapi && ant -f build-jars.xml`
+ * 
+ *    You now have a purejavahidapi.jar that works with Java 1.8 and contains
+ *    the setFeatureReport() fix.
+ * 
  */
 
 package com.thingm.blink1;
