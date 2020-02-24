@@ -176,6 +176,26 @@ public class Blink1
     return null;
     
   }
+
+  /**
+   * A small abstraction for dev.setFeatureReport()
+   * Currently purejavahidapi has inconsistent behavior
+   * between Mac & Windows for the newer setFeatureReport(reportId, buffer, length);
+   * method.  This method uses the older (but working) deprecated method 
+   * with a supresswarning override.
+   */
+  @SuppressWarnings("deprecation")
+  public int setFeatureReport(byte[] buffer, int len) {
+    //return this.dev.setFeatureReport(buffer[0],buffer,len);
+    return this.dev.setFeatureReport(buffer,len);
+  }
+  
+  /**
+   * A small abstraction for dev.getFeatureReport()
+   */
+  public int getFeatureReport(byte[] buffer, int len) {
+    return this.dev.getFeatureReport(buffer, len);
+  }
   
   /**
    * Set blink(1) RGB color immediately.
@@ -187,7 +207,7 @@ public class Blink1
    */
   public int setRGB(int r, int g, int b) {
     byte[] buff = {reportId, (byte)'n', (byte)r, (byte)g, (byte)b, 0, 0, 0, 0};
-    int rc = this.dev.setFeatureReport(reportId, buff, buff.length);
+    int rc = this.setFeatureReport(buff, buff.length);
     return rc;
   }
 
@@ -229,7 +249,7 @@ public class Blink1
     byte th = (byte)(dms >> 8);
     byte tl = (byte)(dms & 0xff);
     byte[] buff = {reportId, (byte)'c', (byte)r, (byte)g, (byte)b, th,tl, (byte)ledn, 0};
-    int rc = this.dev.setFeatureReport(reportId, buff, buff.length);
+    int rc = this.setFeatureReport(buff, buff.length);
     return rc;
   }
   
@@ -310,8 +330,8 @@ public class Blink1
    */
   public int getFirmwareVersion() {
     byte [] buff = { 1, 'v', 0,0,0,0,0,0,0 };
-    this.dev.setFeatureReport(reportId, buff, buff.length);
-    this.dev.getFeatureReport(buff, buff.length);
+    this.setFeatureReport(buff, buff.length);
+    this.getFeatureReport(buff, buff.length);
     System.out.println("BLINK1:getVersion:"+Arrays.toString((buff)));
     int vh = Character.getNumericValue(buff[3]);
     int vl = Character.getNumericValue(buff[4]);
