@@ -47,6 +47,7 @@ import java.awt.Color;
 
 import purejavahidapi.*;
 
+
 public class Blink1 
 {
 
@@ -68,6 +69,7 @@ public class Blink1
   public static void usage() { 
     System.out.println("Usage: Blink1 <cmd> [options]");
   }
+
 
 
   //--------------------------------------------------------------------------
@@ -192,8 +194,17 @@ public class Blink1
    * @returns Blink1 object or NULL if no device with that path found
    */
   public static Blink1 openByPath( String devicepath ) {
-    
-    return null;
+    //int i =
+    Blink1 blink1 = null;
+    HidDeviceInfo devInfo = blink1DevList.stream()
+      .filter(info -> devicepath.equals(info.getPath()))
+      .findAny().orElse(null);
+    try { 
+      HidDevice dev = PureJavaHidApi.openDevice(devInfo);
+      blink1 = new Blink1(dev);
+    } catch(Exception e) {
+    }
+    return blink1;
   }
   
   /**
@@ -202,15 +213,26 @@ public class Blink1
    * @returns Blink1 object or NULL if no device with that serial found
    */
   public static Blink1 openBySerial( String serialnumber ) {
-    return null;
+    //int i =
+    Blink1 blink1 = null;
+    HidDeviceInfo devInfo = blink1DevList.stream()
+      .filter(info -> serialnumber.equals(info.getSerialNumberString()))
+      .findAny().orElse(null);
+    try { 
+      HidDevice dev = PureJavaHidApi.openDevice(devInfo);
+      blink1 = new Blink1(dev);
+    } catch(Exception e) {
+    }
     
+    return blink1;    
   }
 
   /**
    * A small abstraction for dev.setFeatureReport()
    * Currently purejavahidapi has inconsistent behavior
-   * between Mac & Windows for the newer setFeatureReport(reportId, buffer, length);
-   * method.  This method uses the older (but working) deprecated method 
+   * between Mac and Windows for the newer 
+   * 1setFeatureReport(reportId, buffer, length)` method. 
+   * This method uses the older (but working) deprecated method 
    * with a supresswarning override.
    */
   @SuppressWarnings("deprecation")
@@ -240,6 +262,13 @@ public class Blink1
     return rc;
   }
 
+  /**
+   *
+   */
+  public int off() {
+    return this.setRGB(0,0,0);
+  }
+  
   /**
    * Set blink(1) RGB color immediately.
    *
@@ -316,7 +345,11 @@ public class Blink1
    * @returns blink1_command response code, -1 == fail 
    */
   public int writePatternLine(int fadeMillis, int r, int g, int b, int pos) {
-    return -1;
+    int dms = fadeMillis/10;
+    byte th = (byte)(dms >> 8);
+    byte tl = (byte)(dms & 0x00ff);
+    byte[] buf = {reportId, (byte)'P', (byte)r, (byte)g, (byte)b, th,tl, (byte)pos, 0};
+    return this.setFeatureReport(buf,buf.length);
   }
   
   /**
@@ -331,37 +364,81 @@ public class Blink1
     return writePatternLine(fadeMillis, c.getRed(), c.getGreen(), c.getBlue(), pos);
   }
 
+  public PatternLine readPatternLine(int pos) {
+    PatternLine pattline = new PatternLine();
+    pattline.fadeMillis = 100;
+    pattline.r = 255;
+    pattline.g = 33;
+    pattline.b = 11;
+    return pattline;
+  }
+  
   /**
-   * Play a color pattern.
-   *
-   * @param play  true to play, false to stop
-   * @param pos   starting position to play from, 0 = start
+   * Play internal color pattern
+   * @param start pattern line to start from
+   * @param end pattern line to end at
+   * @param count number of times to play, 0=play forever
    * @returns blink1_command response code, -1 == fail 
    */
-  public int play( boolean play, int pos) {
-    return -1;
+  public int play( int start, int end, int count ) {
+    byte[] buf = {reportId, (byte)'p', 1, (byte)start, (byte)end, (byte)count, 0, 0, 0};
+    return this.setFeatureReport(buf,buf.length);
+  }
+
+  /**
+   * Play the internal color pattern
+   */
+  public int play() {
+    return this.play(0,0,0);
+  }
+  
+  /**
+   * Stop pattern playing.
+   */
+  public int stop() {
+    byte[] buf = {reportId, (byte)'p', 0, 0,0, 0, 0,0,0 };
+    return this.setFeatureReport(buf,buf.length);
   }
 
   /**
    * Enable or disable serverdown / servertickle mode
-   * @param on true = turn on serverdown mode, false = turn it off
+   * @param enable true = turn on serverdown mode, false = turn it off
    * @param millis milliseconds until light pattern plays if not updated 
+   * @param stayLitt true/false to stay on when serverdown re-enabled or go off
+   * @param start pattern line to start from
+   * @param end pattern line to end at
    * @returns blink1_command response code, -1 == fail 
    */
-  public int serverdown( boolean on, int millis) {
-    return -1;
-    
+  public int serverdown( boolean enable, int millis,
+                         boolean stayLit, int start, int end) {
+    byte on = (byte)((enable) ? 1:0);
+    byte th = (byte)(millis >> 8);
+    byte tl = (byte)(millis & 0xff);
+    byte st = (byte)((stayLit) ? 1:0);
+    byte[] buf = {reportId, (byte)'D', on, th,tl, st, (byte)start, (byte)end, 0 };
+    return this.setFeatureReport(buf, buf.length);
+  }
+
+  /**
+   * Enable or disable serverdown / servertickle mode
+   * @param enable true = turn on serverdown mode, false = turn it off
+   * @param millis milliseconds until light pattern plays if not updated 
+   *
+   */
+  public int serverdown( boolean enable, int millis ) {
+    return this.serverdown( enable, millis, false, 0, 0);
   }
 
   /** 
    * Get version of firmware code in blink(1) device.
+   *
    * @returns blink1 version number as int (e.g. v1.0 == 100, v2.0 = 200)
    */
   public int getFirmwareVersion() {
     byte [] buff = { 1, 'v', 0,0,0,0,0,0,0 };
     this.setFeatureReport(buff, buff.length);
     this.getFeatureReport(buff, buff.length);
-    System.out.println("BLINK1:getVersion:"+Arrays.toString((buff)));
+    //System.out.println("BLINK1:getVersion:"+Arrays.toString((buff)));
     int vh = Character.getNumericValue(buff[3]);
     int vl = Character.getNumericValue(buff[4]);
     int ver = (vh*100) + vl;
@@ -369,6 +446,8 @@ public class Blink1
   }
 
   /**
+   * Get serial number of this blink(1)
+   *
    * @return serial number string of this blink(1)
    */
   public String getSerial() {
@@ -400,7 +479,7 @@ public class Blink1
 
 
 
-    /**
+  /**
    * Simple command-line demonstration
    */
   public static void main(String args[]) {
@@ -443,8 +522,18 @@ public class Blink1
     int ver = blink1.getFirmwareVersion();
     System.out.println("firmware version: " + ver);
 
+    String serial = blink1.getSerial();
+    System.out.println("serial number: " + serial);
+    
+    System.out.println("Playing internal color pattern for 5 secs...");
+    rc = blink1.play();
+    Blink1.pause(5000);
+    System.out.println("Stopping pattern and closing");
+    rc = blink1.stop();
+    
     blink1.close();
 
+    Blink1.pause(500);
     if( serials.size() >= 2 ) {
       String serialA  = serials.get(0);
       String serialB  = serials.get(1);
