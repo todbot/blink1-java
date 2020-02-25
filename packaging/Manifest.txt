@@ -6,3 +6,4 @@ Specification-Vendor: ThingM Corporation
 Implementation-Title:  com.thingm.blink1
 Implementation-Version: build1
 Implementation-Vendor: ThingM Corporation
+

@@ -29,19 +29,25 @@ JAVA_VER=1.8
 
 #################  Mac OS X  ##################################################
 ifeq "$(OS)" "macosx"
-CLASSPATH=./lib/jna-5.5.0.jar:./lib/purejavahidapi.jar:examples:src/main/java
+
+JARS=./lib/jna-5.5.0.jar:./lib/hid4java.jar
+CLASSPATH=$(JARS):examples:src/main/java
+
 endif
 
 #################  Windows  ##################################################
 ifeq "$(OS)" "windows"
-CLASSPATH+=".\lib\purejavahidapi.jar;.\lib\jna-5.5.0.jar;.\lib\jna-platform-5.5.0.jar"
-CLASSPATH+=";src/main/java"
+
+#JARS=.\lib\purejavahidapi.jar;.\lib\jna-5.5.0.jar
+CLASSPATH+="$(JARS);.\lib\jna-platform-5.5.0.jar;src/main/java"
+
 endif
 
 #################  Linux  ###################################################
 ifeq "$(OS)" "linux"
 
-CLASSPATH=./lib/jna-5.5.0.jar:./lib/purejavahidapi.jar:. 
+#JARS=./lib/jna-5.5.0.jar:./lib/purejavahidapi.jar
+CLASSPATH=$(JARS):examples:src/main/java
 
 endif
 
@@ -58,24 +64,28 @@ help:
 	@echo "make clean ..... to clean all built files"
 	@echo "make javadoc ... to make the javadoc"
 
+# the main one
+jar: javac
+	jar -cfm blink1.jar packaging/Manifest.txt -C src/main/java com/thingm/blink1
+
 javac:
-#	javac -target $(JAVA_VER) thingm/blink1/Blink1.java	
 	javac $(JAVAC_ARGS) src/main/java/com/thingm/blink1/*java	
 
-
 example:
-	javac $(JAVAC_ARGS) examples/*java
+	javac $(JAVAC_ARGS) examples/Example1.java
 
-run-example1:
-	java $(JAVA_ARGS)  Example1
+run-example0: examples
+	java -cp blink1.jar:$(JARS):examples Example0
+
+run-example1: examples
+	java -cp blink1.jar:$(JARS):examples Example1
+
+run-example2: examples
+	java -cp blink1.jar:$(JARS):examples Example2
 
 msg: 
 	@echo "building for OS=$(OS)"
 
-# the main one
-#jar: prep javac jni compile
-jar: javac
-	jar -cfm blink1-java.jar packaging/Manifest.txt src/main/java/com/thingm/blink1/*.class
 
 processing: processinglib
 processinglib: jar
@@ -102,5 +112,7 @@ javadoc:
 	cd ./docs/javadoc && javadoc -sourcepath ../../java thingm.blink1 && cd ../../java
 
 clean:
-	rm src/main/java/com/thingm/blink1/*.class
-	rm examples/*.class
+	-rm blink1.jar
+	-rm src/main/java/com/thingm/blink1/*.class
+	-rm examples/*.class
+

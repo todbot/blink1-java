@@ -2,6 +2,8 @@
 
 import com.thingm.blink1.*;
 
+import java.util.List;
+
 public class Example1 {
   
   /**
@@ -13,14 +15,13 @@ public class Example1 {
     
     System.out.println("Looking for blink(1) devices...");
 
-    Blink1.enumerate(); 
+    List<String> serials = Blink1Finder.findAll();
 
-    int count = Blink1.getCount();
-    if( count == 0 ) {
+    if( serials.size() == 0 ) {
       System.out.println("no devices found");
     }
 
-    Blink1 blink1 = Blink1.open();
+    Blink1 blink1 = Blink1Finder.open();
 
     if( blink1 == null ) { 
       System.out.println("error on open(), no blink(1), next call will return error ");
