@@ -58,14 +58,56 @@ public class Blink1Finder implements HidServicesListener {
     }
     return blink1SerialList;
   }
- 
+
+  /**
+   * Open first blink(1) device and return it
+   * @return Blink1 object opened and ready to go, or null if no blink(1)
+   */
   public static Blink1 open() {
     Blink1 blink1 = null;
-    String serialNumber = null;
-    if( blink1SerialList.size() > 0 ) {
-      HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
-      blink1 = new Blink1Hid4Java(dev);
+    if( blink1SerialList.size() == 0 ) {
+      return null;
     }
+    String serialNumber = blink1SerialList.get(0);
+    HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
+    if( dev == null ) { return null; }
+    blink1 = new Blink1Hid4Java(dev);
+    return blink1;
+  }
+
+  public static Blink1 openFirst() {
+    return open();
+  }
+
+  /**
+   * Open blink(1) device by blink(1) serial number.
+   * @return Blink1 object or NULL if no device with that serial number found
+   */
+  public static Blink1 openBySerial(String serialNumber) {
+    Blink1 blink1 = null;
+    HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
+    if( dev == null ) { return null; }
+    blink1 = new Blink1Hid4Java(dev);
+    return blink1;
+  }
+  
+  /**
+   * Open blink(1) device by blink(1) numerical id (0-getCount()).
+   * Id list is ordered by serial number.
+   * @returns Blink1 object or NULL if no device with that id found
+   */
+  public static Blink1 openById( int id ) {
+    Blink1 blink1 = null;
+    int count = blink1SerialList.size();
+    if( count == 0 || id >= count ) {
+      return null;
+    }
+    String serialNumber = blink1SerialList.get(id);
+    
+    HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
+    if( dev == null ) { return null; }
+    blink1 = new Blink1Hid4Java(dev);
+
     return blink1;
   }
 
@@ -101,6 +143,7 @@ public class Blink1Finder implements HidServicesListener {
     // vendor ID and product ID will be present at the same time
     if (event.getHidDevice().isVidPidSerial(vendorId, productId, null)) {
       //sendMessage(event.getHidDevice());
+      
     }
 
   }
@@ -119,138 +162,5 @@ public class Blink1Finder implements HidServicesListener {
 
   }
 
-
-  /*
-  /**
-   * (re)Enumerate the bus and return a count of blink(1) device found.
-   * @returns blink1_command response code, -1 == fail 
-   *
-  public static int enumerate() {
-    blink1DevList = new ArrayList<HidDeviceInfo>();
-    try {
-      List<HidDeviceInfo> devList = PureJavaHidApi.enumerateDevices();
-      for (HidDeviceInfo info : devList) {
-        if (info.getVendorId() == (short) vendorId &&
-            info.getProductId() == (short) productId) {
-          blink1DevList.add(info);
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    //Collections.sort(blink1DevList, (d1, d2) -> {
-    //    return d2.getSerialNumberString() - d1.getSerialNumberString();
-    //  });
-    
-    return getCount();
-  }
-
-  /**
-   * Get a count of blink(1) devices that have been enumerated.
-   *
-   *
-  public static int getCount() {
-    return blink1DevList.size();
-  }
   
-  /**
-   * Return the list of blink(1) device paths found by enumerate.
-   *
-   * @returns array of device paths
-   *
-  public static List<String> getDevicePaths() {
-    List<String> paths = new ArrayList<String>();
-    for (HidDeviceInfo dev : blink1DevList) {
-      paths.add( dev.getPath() );
-    }
-    return paths;
-  }
-  
-  /**
-   * Return the list of blink(1) device serials found by enumerate.
-   *
-   * @returns array of device serials
-   *
-  public static List<String> getDeviceSerials() {
-    List<String> serials = new ArrayList<String>();
-    for (HidDeviceInfo dev : blink1DevList) {
-      serials.add( dev.getSerialNumberString() );
-    }
-    return serials;
-  }
-
-  /**
-   * Open blink(1) device by blink(1) numerical id (0-getCount()).
-   * Id list is ordered by serial number.
-   * @returns Blink1 object or NULL if no device with that id found
-   *
-  public static Blink1 openById( int id ) {
-    Blink1 blink1 = null;
-    try { 
-      HidDeviceInfo devInfo = blink1DevList.get(id);
-      final HidDevice dev = PureJavaHidApi.openDevice(devInfo);
-      blink1 = new Blink1(dev);
-    } catch(Exception e) {
-    }
-    return blink1;
-  }
-  
-  /**
-   * Open the first (or only) blink(1) device.
-   *
-  public static Blink1 openFirst() {
-    return openById(0);
-  }    
-
-  /**
-   * Open the first (or only) blink(1) device.  
-   * Causes an enumerate to happen.
-   * Stores open device id statically in native lib.
-   *
-   * @returns Blink1 object or null if no blink(1) device
-   *
-  public static Blink1 open() {
-    return openFirst();
-  }
-  /**
-   * Open blink(1) device by USB path, may be different for each insertion.
-   *
-   * @returns Blink1 object or NULL if no device with that path found
-   *
-  public static Blink1 openByPath( String devicepath ) {
-    //int i =
-    Blink1 blink1 = null;
-    HidDeviceInfo devInfo = blink1DevList.stream()
-      .filter(info -> devicepath.equals(info.getPath()))
-      .findAny().orElse(null);
-    try { 
-      HidDevice dev = PureJavaHidApi.openDevice(devInfo);
-      blink1 = new Blink1(dev);
-    } catch(Exception e) {
-    }
-    return blink1;
-  }
-  
-  /**
-   * Open blink(1) device by blink(1) serial number.
-   *
-   * @returns Blink1 object or NULL if no device with that serial found
-   *
-  public static Blink1 openBySerial( String serialnumber ) {
-    //int i =
-    Blink1 blink1 = null;
-    HidDeviceInfo devInfo = blink1DevList.stream()
-      .filter(info -> serialnumber.equals(info.getSerialNumberString()))
-      .findAny().orElse(null);
-    try { 
-      HidDevice dev = PureJavaHidApi.openDevice(devInfo);
-      blink1 = new Blink1(dev);
-    } catch(Exception e) {
-    }
-    
-    return blink1;    
-  }
-
-*/
 }

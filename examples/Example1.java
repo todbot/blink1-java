@@ -37,8 +37,6 @@ public class Example1 {
     System.out.println("Turning off");
     blink1.off();
 
-    PatternLine p = blink1.readPatternLine(0);
-    System.out.printf("pattline: %d %d,%d,%d \n", p.fadeMillis,p.r,p.g,p.b);
     
     blink1.close();
     

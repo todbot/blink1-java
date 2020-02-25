@@ -125,45 +125,6 @@ public abstract class Blink1
   }
 
   /**
-   * Write a blink(1) light pattern entry.
-   *
-   * @param fadeMillis milliseconds to take to get to color
-   * @param r red component 0-255
-   * @param g green component 0-255
-   * @param b blue component 0-255
-   * @param pos entry position 0-patt_max
-   * @returns blink1_command response code, -1 == fail 
-   */
-  public int writePatternLine(int fadeMillis, int r, int g, int b, int pos) {
-    int dms = fadeMillis/10;
-    byte th = (byte)(dms >> 8);
-    byte tl = (byte)(dms & 0x00ff);
-    byte[] buf = {(byte)'P', (byte)r, (byte)g, (byte)b, th,tl, (byte)pos, 0};
-    return this.sendFeatureReport(buf, reportId);
-  }
-  
-  /**
-   * Write a blink(1) light pattern entry.
-   *
-   * @param fadeMillis milliseconds to take to get to color
-   * @param c Color to set
-   * @param pos entry position 0-patt_max
-   * @returns blink1_command response code, -1 == fail 
-   */
-  public int writePatternLine(int fadeMillis, Color c, int pos) {
-    return writePatternLine(fadeMillis, c.getRed(), c.getGreen(), c.getBlue(), pos);
-  }
-
-  public PatternLine readPatternLine(int pos) {
-    PatternLine pattline = new PatternLine();
-    pattline.fadeMillis = 100;
-    pattline.r = 255;
-    pattline.g = 33;
-    pattline.b = 11;
-    return pattline;
-  }
-  
-  /**
    * Play internal color pattern
    * @param start pattern line to start from
    * @param end pattern line to end at
@@ -251,13 +212,125 @@ public abstract class Blink1
     return this.serialNumber;
   }
 
+
+  /**
+   * Write a blink(1) light pattern entry.
+   *
+   * @param fadeMillis milliseconds to take to get to color
+   * @param r red component 0-255
+   * @param g green component 0-255
+   * @param b blue component 0-255
+   * @param pos entry position 0-patt_max
+   * @returns blink1_command response code, -1 == fail 
+   */
+  public int writePatternLine(int fadeMillis, int r, int g, int b, int pos) {
+    int dms = fadeMillis/10;
+    byte th = (byte)(dms >> 8);
+    byte tl = (byte)(dms & 0x00ff);
+    byte[] buf = {(byte)'P', (byte)r, (byte)g, (byte)b, th,tl, (byte)pos, 0};
+    return this.sendFeatureReport(buf, reportId);
+  }
+  
+  /**
+   * Write a blink(1) light pattern entry.
+   *
+   * @param fadeMillis milliseconds to take to get to color
+   * @param c Color to set
+   * @param pos entry position 0-patt_max
+   * @returns blink1_command response code, -1 == fail 
+   */
+  public int writePatternLine(int fadeMillis, Color c, int pos) {
+    return writePatternLine(fadeMillis, c.getRed(), c.getGreen(), c.getBlue(), pos);
+  }
+
+  /**
+   *
+   */
+  public int writePatternLine(PatternLine p, int pos) {
+    return writePatternLine( p.fadeMillis, p.r, p.g, p.b, pos);
+  }
+
+  /**
+   * Read a color pattern line at position
+   * @param pos pattern line to read
+   * @return PatternLine object representing the line, or null on error
+   */
+  public PatternLine readPatternLine(int pos) {
+    int rc;
+    byte[] buf = {(byte)'R', 0, 0, 0, 0, 0, (byte)pos, 0};
+    rc = this.sendFeatureReport(buf,reportId);
+    rc = this.getFeatureReport(buf,reportId); // FIXME: check return code
+    //System.out.println("BLINK1:readPatternline:"+Arrays.toString((buf)));
+    if( rc < 0 ) { return null; }
+    
+    // java signed bytes are stupid
+    int fadeMillis = ((((buf[5] & 0xff)<<8) | (buf[6] & 0xff)) * 10);
+    int r = buf[2] & 0xff;
+    int g = buf[3] & 0xff;
+    int b = buf[4] & 0xff;
+    int ledn = 0;
+
+    PatternLine pattline = new PatternLine(fadeMillis, r,g,b, ledn); 
+    
+    return pattline;
+  }
+
+  /**
+   * Read all blink(1) patternlines out
+   * @return List of Patternlines
+   */
+  public List<PatternLine> readPattern() {
+    List<PatternLine> pattern = new ArrayList<>();
+    for( int i=0; i< this.getPatternLineMaxCount(); i++) {
+      PatternLine p = this.readPatternLine(i); // FIXME: check error case
+      pattern.add(p);      
+    }
+    return pattern;
+  }
+  
+  /**
+   * Save internal RAM pattern to flash
+   */
+  public int savePattern() {
+    byte[] buf = {(byte)'W', (byte)0xBE, (byte)0xEF, (byte)0xCA, (byte)0xFE, 0, 0, 0};
+    return this.sendFeatureReport(buf,reportId);
+  }
+
+  /**
+   * Play a given list of PatternLines as a pattern
+   * Alters blink(1) internal pattern space but doesn't save the pattern to flash
+   * @param patternlines, a List of PatternLines
+   * @returns -1 if error, > 0 if success
+   */
+  public int playPattern(List<PatternLine> patternlines) {
+    int linecount = patternlines.size();
+    if( linecount > this.getPatternLineMaxCount() ) {
+      linecount = this.getPatternLineMaxCount();
+    }
+    int rc; 
+    for( int i = 0; i< linecount; i++ ) {
+      PatternLine p = patternlines.get(i);
+      System.out.printf("pattline: %d mssec - rgb:%d,%d,%d\n", p.fadeMillis,p.r,p.g,p.b);
+      rc = this.writePatternLine(p,i);
+      if( rc<0) { return rc; }
+    }
+    return this.play();
+  }
+  
+  /**
+   *
+   */
+  public int getPatternLineMaxCount() {
+    return 16; // FIXME: dependant on which blink(1)
+  }
+  
+
   //-------------------------------------------------------------------------
   // Utilty Class methods
   //-------------------------------------------------------------------------
 
   /**
    * one attempt at a degamma curve.
-   * //FIXME: this is now in blink1-lib
    */
   public static final int log2lin( int n ) {
     //return  (int)(1.0* (n * 0.707 ));  // 1/sqrt(2)
