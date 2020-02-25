@@ -37,3 +37,14 @@ Download:
 Download:
 [(Mac OSX)](https://thingm.com/blink1/downloads/Blink1Test0-mac.zip) /
 [(Windows)](https://thingm.com/blink1/downloads/Blink1Test0-win.zip)
+
+
+
+##  Building blink1-java
+
+Mac OS X:
+- Need Java installed
+
+Windows:
+- Need Java installed
+- Must use MSYS2 shell (not Powershell or cmd)

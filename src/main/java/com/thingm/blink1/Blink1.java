@@ -429,6 +429,13 @@ public class Blink1
     return this.serverdown( enable, millis, false, 0, 0);
   }
 
+  /**
+   * Alias for getFirmwareVersion()
+   */
+  public int getVersion() {
+    return this.getFirmwareVersion();
+  }
+  
   /** 
    * Get version of firmware code in blink(1) device.
    *
