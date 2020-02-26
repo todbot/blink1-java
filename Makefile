@@ -4,7 +4,7 @@
 #
 
 
-LIBZIPNAME = blink1-java-processing-lib.zip
+PROCESSINGZIPNAME = blink1-java-processing.zip
 
 # try to do some autodetecting
 UNAME := $(shell uname -s)
@@ -87,20 +87,16 @@ msg:
 
 processing: processinglib
 processinglib: jar
-	rm -f $(LIBZIPNAME)
-	rm -rf blink1/library
-	rm -rf blink1/examples
-	mkdir -p blink1/library
-	mkdir -p blink1/examples
-	cp packaging/processing-export.txt blink1/library/export.txt
-	cp packageing/library.properties blink1
-	cp -r build/* blink1/library
-	rm -rf blink1/library/html
-	cp -r processing/* blink1/examples
-	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(LIBZIPNAME) blink1
-	cp $(LIBZIPNAME) build
+	rm -f $(PROCESSINGZIPNAME)
+	rm -rf processing
+	mkdir -p processing/blink1/library
+	mkdir -p processing/blink1/examples
+	cp packaging/library.properties processing/blink1
+	cp -r lib/* processing/blink1/library
+	cp -r examples-processing/* processing/blink1/examples
+	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(PROCESSINGZIPNAME) blink1
 	@echo
-	@echo "now unzip $(LIBZIPNAME) into ~/Documents/Processing/libraries"
+	@echo "now unzip $(PROCESSINGZIPNAME) into ~/Documents/Processing3/libraries"
 #	@echo "or maybe ln -s \`pwd\`/ ~/Documents/Processing/libraries/blink1"
 
 
