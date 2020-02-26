@@ -17,9 +17,9 @@ public class Example2 {
       //usage();
     }
 
-    List<String> serials = Blink1Finder.findAll();
+    String[] serials = Blink1Finder.findAll();
     
-    int count = serials.size();
+    int count = serials.length;
 
     System.out.println("found "+count+ ((count==1) ? " device":" devices"));
 
@@ -55,9 +55,9 @@ public class Example2 {
     blink1.close();
 
     Blink1.pause(500);
-    if( serials.size() >= 2 ) {
-      String serialA  = serials.get(0);
-      String serialB  = serials.get(1);
+    if( serials.length >= 2 ) {
+      String serialA  = serials[0];
+      String serialB  = serials[1];
       System.out.println("opening two devices: "+serialA+" and "+serialB);
       Blink1 blink1A = Blink1Finder.openBySerial( serialA );
       Blink1 blink1B = Blink1Finder.openBySerial( serialB );
@@ -96,7 +96,7 @@ public class Example2 {
       // can do r,g,b ints or a single Color
       //rc = blink1.setRGB( r,g,b );
       Color c = new Color( r,g,b );
-      rc = blink1.setRGB( c );
+      rc = blink1.setColor( c );
       if( rc == -1 ) 
         System.out.println("error detected");
       else 
@@ -110,7 +110,7 @@ public class Example2 {
     System.out.println("Turn off all blink(1)s.");
     for(int n=0; n < count; n++){
       blink1 = Blink1Finder.openById(n);
-      blink1.setRGB(Color.BLACK);
+      blink1.setColor(Color.BLACK);
       blink1.close();
     }
 

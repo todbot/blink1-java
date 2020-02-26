@@ -10,7 +10,7 @@
  *
  */
 
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 
 import ddf.minim.analysis.*;
 import ddf.minim.*;
@@ -74,8 +74,8 @@ int octaveDivisions = 2;
 void setup() {  
   size(300,300);
 
-  blink1 = Blink1.open();
-  if( blink1.error() ) { 
+  blink1 = Blink1Finder.open();
+  if( blink1==null ) { 
       println("uh oh, no Blink1 device found");
   }
 

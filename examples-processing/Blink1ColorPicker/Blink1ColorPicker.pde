@@ -5,12 +5,9 @@
  *
  */
 
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 
 Blink1 blink1;
-
-int sketchWidth  = 400;
-int sketchHeight = 240;
 
 int colorPickerX = 10;
 int colorPickerY = 20;
@@ -30,15 +27,15 @@ String statusText="";
 //
 void setup()
 {
-  size(sketchWidth, sketchHeight);
+  size(400, 240);
     
-  frameRate(20);
+  frameRate(30);
   smooth();
   font = loadFont("LucidaSans-12.vlw");
 
-  blink1 = Blink1.open();
+  blink1 = Blink1Finder.open();
 
-  if( blink1.error() ) { 
+  if( blink1 == null ) { 
     println("oops no blink1");
     statusText = "no Blink1 found";
   }
@@ -69,7 +66,9 @@ void updateBlink1() {
 
     println("r,g,b: (lin)"+r+","+g+","+b + " ==> (log)"+rn+","+gn+","+bn);
     //blink1.open();
-    blink1.setRGB( r, g, b );
+    if(blink1!=null) {
+      blink1.setRGB( r, g, b );
+    }
     //blink1.close();
 }
 

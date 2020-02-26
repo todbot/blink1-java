@@ -30,7 +30,7 @@ import java.awt.Color;
 
 import org.json.simple.JSONObject;
 
-import thingm.blink1.Blink1;
+import com.thingm.blink1.*;
 
 
 
@@ -60,7 +60,7 @@ public class Blink1NanoHTTPD extends NanoHTTPD
     int g = rgb.getGreen();
     int b = rgb.getBlue();
     
-    blink1.open();
+    blink1 = Blink1Finder.open();
     blink1.fadeToRGB( timems, r,g,b );
     blink1.close();
   }
@@ -95,12 +95,12 @@ public class Blink1NanoHTTPD extends NanoHTTPD
         msg = "param 'cmd' must be specified";
       } 
       else if( cmd.equalsIgnoreCase("enumerate") ) { 
-        msg += " re-enumarting...";
-        blink1.open();
+        msg += " re-enumerting...";
+        //blink1.open();
         //blink1.version();
-        blink1.close();
-        int rc = blink1.enumerate();
-        msg += "rc:"+rc;
+        //blink1.close();
+        //int rc = blink1.enumerate();
+        //msg += "rc:"+rc;
       }
       else if( cmd.equalsIgnoreCase("fadeToRGB" ) ) { 
         msg += rgb+","+time+" sec";
@@ -118,7 +118,7 @@ public class Blink1NanoHTTPD extends NanoHTTPD
         
       }
       else if( cmd.equalsIgnoreCase("listBlink1s") ) {
-        String serials[] = blink1.getDeviceSerials();
+        String serials[] = Blink1Finder.findAll();
         for( int i=0; i<serials.length; i++ ) {
           System.out.println( "serial: "+serials[i]);
         }

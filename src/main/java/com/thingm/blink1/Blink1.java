@@ -56,17 +56,17 @@ public abstract class Blink1
    *
    */
   public int off() {
-    return this.setRGB(0,0,0);
+    return this.fadeToRGB(300, 0,0,0);
   }
   
   /**
-   * Set blink(1) RGB color immediately.
+   * Set blink(1) color immediately.
    *
    * @param c Color to set
    * @returns blink1_command response code, -1 == fail 
    */
-  public int setRGB(Color c) {
-    return setRGB( c.getRed(), c.getGreen(), c.getBlue() );
+  public int setColor(Color c) {
+    return this.setRGB( c.getRed(), c.getGreen(), c.getBlue() );
   }
 
   /**

@@ -1,14 +1,12 @@
 //
 //
 //
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 
 int serverport = 8080;
 
 PatternPlayer player;
 
-int sketchWidth  = 400;
-int sketchHeight = 240;
 
 int colorPickerX = 10;
 int colorPickerY = 20;
@@ -42,7 +40,7 @@ void updateBlink1()
 //
 void setup()
 {
-  size(sketchWidth, sketchHeight);
+  size(400, 240);
     
   frameRate(15);
   smooth();

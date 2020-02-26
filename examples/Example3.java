@@ -15,9 +15,9 @@ public class Example3 {
     
     System.out.println("Looking for blink(1) devices...");
 
-    List<String> serials = Blink1Finder.findAll();
+    String[] serials = Blink1Finder.findAll();
 
-    if( serials.size() == 0 ) {
+    if( serials.length == 0 ) {
       System.out.println("no devices found");
     }
 

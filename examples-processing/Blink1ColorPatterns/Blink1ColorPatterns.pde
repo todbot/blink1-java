@@ -5,7 +5,7 @@
  *
  */
 
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 import java.util.Random;
 import java.awt.Color;
 
@@ -25,12 +25,11 @@ color cscreen;
 //
 void setup()
 {
-  //frameRate(60);
   size(300,300);
   
-  blink1 = Blink1.open();
+  blink1 = Blink1Finder.open();
   
-  if( blink1.error() ) { 
+  if( blink1==null ) { 
     println("uh oh, no Blink1 device found");
   }
   
@@ -59,7 +58,8 @@ void draw()
     ledcolors[ 0 ] = ctmp;
     
     for( int n=0; n < ledn; n++ ) {
-      blink1.fadeToRGB( 100, ledcolors[n], n+1 ); // addresing starts at 1
+      if(blink1!=null) 
+        blink1.fadeToRGB( 100, ledcolors[n], n+1 ); // addresing starts at 1
     }
     
     if( (millis() - nextUpdate) > 0 ) {
@@ -99,4 +99,3 @@ void keyPressed() {
   if( runningMillis < 5 )  runningMillis = 5;
   if( runningMillis > 500 ) runningMillis = 500;
 }
-

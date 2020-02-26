@@ -1,5 +1,5 @@
 
-import thingm.blink1.Blink1;
+import com.thingm.blink1.Blink1;
 
 import java.util.*;
 import java.util.concurrent.*;

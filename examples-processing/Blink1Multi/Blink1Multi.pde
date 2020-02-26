@@ -1,11 +1,11 @@
 /*
  * Blink1Multi -- Show off how to use multiple blink(1)s
  *
- * 2014, Tod E. Kurt, http://thingm.com/ , http://todbot.com/blog/
+ * 2014-2020, Tod E. Kurt, http://thingm.com/ , http://todbot.com/blog/
  *
  */
 
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 import java.util.Random;
 
 Blink1 blink1;
@@ -30,8 +30,8 @@ void setup()
   size(300,300);
   frameRate(15);
 
-  Blink1.enumerate(); 
-  num_blink1s = Blink1.getCount();
+  String[] blink1_serials = Blink1Finder.findAll(); 
+  num_blink1s = blink1_serials.length;
 
  if( num_blink1s == 0 ) {
     println("uh oh, no Blink1 device found");
@@ -62,7 +62,7 @@ void randDisco()
 
   blink1i = int(random(num_blink1s));
   // open up a blink1, send it a color, close it 
-  blink1 = Blink1.openById( blink1i );
+  blink1 = Blink1Finder.openById( blink1i );
   blink1.fadeToRGB( fadeTime, int(red(c)), int(green(c)), int(blue(c)) );
   blink1.close();
 
@@ -93,13 +93,15 @@ void randColorFades()
   rect(10, 10, width-20, height-20);
 
   // open up a blink1, send it a color, close it 
-  blink1 = Blink1.openById( blink1i );
+  blink1 = Blink1Finder.openById( blink1i );
   blink1.fadeToRGB( fadeTime, int(red(c)), int(green(c)), int(blue(c)) );
   blink1.close();
 
   // go to next blink1 (or loop)
   blink1i++;
   blink1i %= num_blink1s;
+
+  Blink1Finder.shutdown();
 
 }
 
@@ -121,7 +123,7 @@ void cylonFades()
   fadeTime = 800;
 
   // open up a blink1, send it a color, close it 
-  blink1 = Blink1.openById( blink1i );
+  blink1 = Blink1Finder.openById( blink1i );
   blink1.fadeToRGB( fadeTime, 0,0,0 );
   blink1.close();
 
@@ -143,7 +145,7 @@ void cylonFades()
   println("blink1i:"+blink1i+" ci:"+ci);
 
   // open up a blink1, send it a color, close it 
-  blink1 = Blink1.openById( blink1i );
+  blink1 = Blink1Finder.openById( blink1i );
   blink1.fadeToRGB( fadeTime, int(red(c)), int(green(c)), int(blue(c)));
   blink1.close();
 

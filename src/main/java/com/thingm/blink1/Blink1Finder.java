@@ -17,7 +17,7 @@ public class Blink1Finder implements HidServicesListener {
 
   private static Blink1Finder finder = null; // singleton
 
-  static List<String> blink1SerialList = new ArrayList<String>();
+  static List<String> blink1SerialList = null;
   static HidServices hidServices = null;
   
   // static method to create instance of Singleton class 
@@ -30,6 +30,12 @@ public class Blink1Finder implements HidServicesListener {
   }
 
   private Blink1Finder() {
+    //HidServicesSpecification hidServicesSpec = new HidServicesSpecification();
+    //hidServicesSpec.setScanMode(ScanMode.NO_SCAN);
+    //hidServicesSpec.setAutoShutdown(true);
+
+    // Get HID services using custom specification
+    //hidServices = HidManager.getHidServices(hidServicesSpec);
     hidServices = HidManager.getHidServices();
     hidServices.addHidServicesListener(this);
 
@@ -39,6 +45,10 @@ public class Blink1Finder implements HidServicesListener {
 
   }
 
+  /**
+   * FIXME: Is it possible to avoid needing this?
+   *     (e.g. this causes sigsegv in Processing on exit)
+   */
   public static void shutdown() {
     // Shut down and rely on auto-shutdown hook to clear HidApi resources
     hidServices.shutdown();
@@ -46,17 +56,18 @@ public class Blink1Finder implements HidServicesListener {
 
   /**
    * Look for blink(1)s
-   * @return List of blink(1) serial number Strings
+   * @return array of blink(1) serial number Strings
    */
-  public static List<String> findAll() {
+  public static String[] findAll() {
     getFinder(); 
+    blink1SerialList = new ArrayList<String>();
     for (HidDevice hidDevice : hidServices.getAttachedHidDevices()) {
       if( hidDevice.getVendorId() == vendorId &&
           hidDevice.getProductId() == productId ) {
         blink1SerialList.add( hidDevice.getSerialNumber() ) ;
       }
     }
-    return blink1SerialList;
+    return blink1SerialList.toArray(new String[0]);
   }
 
   /**
@@ -65,6 +76,9 @@ public class Blink1Finder implements HidServicesListener {
    */
   public static Blink1 open() {
     Blink1 blink1 = null;
+    if( blink1SerialList == null ) {
+      findAll();
+    }
     if( blink1SerialList.size() == 0 ) {
       return null;
     }
@@ -130,6 +144,7 @@ public class Blink1Finder implements HidServicesListener {
     }
     public void close() {
       this.dev.close();
+      this.dev = null;
     }
   }
 

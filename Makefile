@@ -91,10 +91,12 @@ processinglib: jar
 	rm -rf processing
 	mkdir -p processing/blink1/library
 	mkdir -p processing/blink1/examples
+	mkdir -p processing/blink1/src
 	cp packaging/library.properties processing/blink1
 	cp -r lib/* processing/blink1/library
-	cp -r examples-processing/* processing/blink1/examples
-	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(PROCESSINGZIPNAME) blink1
+#	cp -r examples-processing/* processing/blink1/examples
+#	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(PROCESSINGZIPNAME) com/thingm/blink1/*java
+	pushd processing && zip -r $(PROCESSINGZIPNAME).zip blink1 && popd
 	@echo
 	@echo "now unzip $(PROCESSINGZIPNAME) into ~/Documents/Processing3/libraries"
 #	@echo "or maybe ln -s \`pwd\`/ ~/Documents/Processing/libraries/blink1"
