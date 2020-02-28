@@ -56,6 +56,7 @@ public abstract class Blink1
    *
    */
   public int off() {
+    int rc = this.stop();
     return this.fadeToRGB(300, 0,0,0);
   }
   

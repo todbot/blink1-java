@@ -28,10 +28,10 @@ public class Example3 {
     }
         
     PatternLine[] mypattern = {
-      new PatternLine(100, 255,  0,255, 0),
-      new PatternLine(100, 100, 10,100, 0),
-      new PatternLine(200,  20, 80, 20, 0),
-      new PatternLine(200,   0,130,  0, 0),
+      new PatternLine(500, 255,  0,255, 0),
+      new PatternLine(500, 100, 10,100, 0),
+      new PatternLine(500,  20, 80, 20, 0),
+      new PatternLine(500,   0,130,  0, 0),
       new PatternLine(  0,   0,  0,  0, 0),
       new PatternLine(  0,   0,  0,  0, 0),
       new PatternLine(  0,   0,  0,  0, 0),

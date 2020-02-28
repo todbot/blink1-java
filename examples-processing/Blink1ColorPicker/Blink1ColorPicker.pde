@@ -28,7 +28,6 @@ String statusText="";
 void setup()
 {
   size(400, 240);
-    
   frameRate(30);
   smooth();
   font = loadFont("LucidaSans-12.vlw");
@@ -40,7 +39,7 @@ void setup()
     statusText = "no Blink1 found";
   }
   else {
-    statusText = "Blink1";
+    statusText = "Blink1 connected";
   }
 
   pickX = colorPickerX + (colorPickerWidth/8)*7; // hack
@@ -65,7 +64,6 @@ void updateBlink1() {
     int bn = log2lin(b);
 
     println("r,g,b: (lin)"+r+","+g+","+b + " ==> (log)"+rn+","+gn+","+bn);
-    //blink1.open();
     if(blink1!=null) {
       blink1.setRGB( r, g, b );
     }
