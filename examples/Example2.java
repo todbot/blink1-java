@@ -13,11 +13,7 @@ public class Example2 {
     
     int rc;
 
-    if( args.length == 0 ) {
-      //usage();
-    }
-
-    String[] serials = Blink1Finder.findAll();
+    String[] serials = Blink1Finder.listAll();
     
     int count = serials.length;
 

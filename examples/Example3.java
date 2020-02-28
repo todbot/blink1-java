@@ -13,14 +13,6 @@ public class Example3 {
     
     int rc;
     
-    System.out.println("Looking for blink(1) devices...");
-
-    String[] serials = Blink1Finder.findAll();
-
-    if( serials.length == 0 ) {
-      System.out.println("no devices found");
-    }
-
     Blink1 blink1 = Blink1Finder.open();
 
     if( blink1 == null ) { 
@@ -32,22 +24,31 @@ public class Example3 {
 
     for( int i = 0; i< blink1.getPatternLineMaxCount(); i++ ) {
       PatternLine p = blink1.readPatternLine(i);
-      System.out.printf("pattline: %d mssec - rgb:%d,%d,%d\n", p.fadeMillis,p.r,p.g,p.b);
+      System.out.printf("pattline: %i %s\n",i,p);
     }
         
-    List<PatternLine> mypattern = new ArrayList<> (
-        Arrays.asList( new PatternLine(100, 255,0,255, 0),
-                       new PatternLine(100, 155,1,155, 0),
-                       new PatternLine(200, 40,40,40, 0) ) );
+    PatternLine[] mypattern = {
+      new PatternLine(100, 255,  0,255, 0),
+      new PatternLine(100, 100, 10,100, 0),
+      new PatternLine(200,  20, 80, 20, 0),
+      new PatternLine(200,   0,130,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0),
+      new PatternLine(  0,   0,  0,  0, 0)
+    };
 
 
     System.out.println("blink(1) stored pattern:");
     mypattern = blink1.readPattern();
-    for( int i = 0; i< mypattern.size(); i++ ) {
-      PatternLine p = mypattern.get(i);
-      System.out.printf("pattline: %d mssec - rgb:%d,%d,%d\n", p.fadeMillis,p.r,p.g,p.b);
+    for( int i = 0; i< mypattern.length; i++ ) {
+      PatternLine p = mypattern[i];
+      System.out.printf("pattline: %d %s\n",i,p);
     }
-
+    
+    blink1.playPattern(mypattern);
    
     blink1.close();
     

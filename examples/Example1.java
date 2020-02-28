@@ -16,12 +16,9 @@ public class Example1 {
     
     System.out.println("Looking for blink(1) devices...");
 
-    //    String[] serials = Blink1Finder.findAll();
-    //if( serials.length == 0 ) {
-    //  System.out.println("no devices found");
-    //}
 
     Blink1 blink1 = Blink1Finder.open();
+    //Blink1 blink1 = Blink1Finder.openBySerial("20003299");
 
     if( blink1 == null ) { 
       System.out.println("no blink(1) found, next call will return error ");
