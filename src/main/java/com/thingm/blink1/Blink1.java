@@ -237,7 +237,7 @@ public abstract class Blink1
    * @param fadeMillis milliseconds to take to get to color
    * @param c Color to set
    * @param pos entry position 0-patt_max
-   * @returns blink1_command response code, -1 == fail 
+   * @returns < 0 if error
    */
   public int writePatternLine(int fadeMillis, Color c, int pos) {
     return writePatternLine(fadeMillis, c.getRed(), c.getGreen(), c.getBlue(), pos);
@@ -248,6 +248,29 @@ public abstract class Blink1
    */
   public int writePatternLine(PatternLine p, int pos) {
     return writePatternLine( p.fadeMillis, p.r, p.g, p.b, pos);
+  }
+
+  /**
+   * Write a pattern to blink(1) RAM
+   * Alters blink(1) internal pattern space but doesn't save the pattern to flash
+   * @param patternlines, a List of PatternLines
+   * @param clear, true = zero-out any unused patternlines, false = keep unused
+   * @returns < 0 if error
+   */
+  public int writePattern(PatternLine[] patternlines, boolean clear) {
+    // FIXME: add clear logic
+    int linecount = patternlines.length;
+    if( linecount > this.getPatternLineMaxCount() ) {
+      linecount = this.getPatternLineMaxCount();
+    }
+    int rc=0; 
+    for( int i = 0; i< linecount; i++ ) {
+      PatternLine p = patternlines[i];
+      System.out.printf("writePattern:%d ",i,p);
+      rc = this.writePatternLine(p,i);
+      if(rc<0) { return rc; }
+    }
+    return rc;
   }
 
   /**
@@ -279,13 +302,13 @@ public abstract class Blink1
    * Read all blink(1) patternlines out
    * @return List of Patternlines
    */
-  public List<PatternLine> readPattern() {
+  public PatternLine[] readPattern() {
     List<PatternLine> pattern = new ArrayList<>();
     for( int i=0; i< this.getPatternLineMaxCount(); i++) {
       PatternLine p = this.readPatternLine(i); // FIXME: check error case
       pattern.add(p);      
     }
-    return pattern;
+    return pattern.toArray(new PatternLine[0]);
   }
   
   /**
@@ -300,21 +323,23 @@ public abstract class Blink1
    * Play a given list of PatternLines as a pattern
    * Alters blink(1) internal pattern space but doesn't save the pattern to flash
    * @param patternlines, a List of PatternLines
+   * @param clear, true = zero-out any unused patternlines, false = keep unused
    * @returns -1 if error, > 0 if success
    */
-  public int playPattern(List<PatternLine> patternlines) {
-    int linecount = patternlines.size();
-    if( linecount > this.getPatternLineMaxCount() ) {
-      linecount = this.getPatternLineMaxCount();
-    }
-    int rc; 
-    for( int i = 0; i< linecount; i++ ) {
-      PatternLine p = patternlines.get(i);
-      System.out.printf("pattline: %d mssec - rgb:%d,%d,%d\n", p.fadeMillis,p.r,p.g,p.b);
-      rc = this.writePatternLine(p,i);
-      if( rc<0) { return rc; }
-    }
+  public int playPattern(PatternLine[] patternlines, boolean clear) {
+    int rc = this.writePattern(patternlines, clear);
+    if(rc<0) return rc;
     return this.play();
+  }
+  
+  /**
+   * Play a given list of PatternLines as a pattern
+   * Alters blink(1) internal pattern space but doesn't save the pattern to flash
+   * @param patternlines, a List of PatternLines
+   * @returns -1 if error, > 0 if success
+   */
+  public int playPattern(PatternLine[] patternlines) {
+    return this.playPattern(patternlines,true);
   }
   
   /**

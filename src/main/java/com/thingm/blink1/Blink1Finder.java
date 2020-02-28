@@ -58,7 +58,7 @@ public class Blink1Finder implements HidServicesListener {
    * Look for blink(1)s
    * @return array of blink(1) serial number Strings
    */
-  public static String[] findAll() {
+  public static String[] listAll() {
     getFinder(); 
     blink1SerialList = new ArrayList<String>();
     for (HidDevice hidDevice : hidServices.getAttachedHidDevices()) {
@@ -77,16 +77,13 @@ public class Blink1Finder implements HidServicesListener {
   public static Blink1 open() {
     Blink1 blink1 = null;
     if( blink1SerialList == null ) {
-      findAll();
+      listAll();
     }
     if( blink1SerialList.size() == 0 ) {
       return null;
     }
     String serialNumber = blink1SerialList.get(0);
-    HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
-    if( dev == null ) { return null; }
-    blink1 = new Blink1Hid4Java(dev);
-    return blink1;
+    return openBySerial(serialNumber);
   }
 
   public static Blink1 openFirst() {
@@ -99,6 +96,10 @@ public class Blink1Finder implements HidServicesListener {
    */
   public static Blink1 openBySerial(String serialNumber) {
     Blink1 blink1 = null;
+    //System.out.printf("openBySerial:%s\n",serialNumber);
+    if( blink1SerialList == null ) {
+      listAll();
+    }
     HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
     if( dev == null ) { return null; }
     blink1 = new Blink1Hid4Java(dev);
