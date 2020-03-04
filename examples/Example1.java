@@ -35,6 +35,9 @@ public class Example1 {
     System.out.println("Setting to green");
     blink1.setColor(Color.green);
     Blink1.pause(500);
+
+    Color c = blink1.getColor();
+    System.out.println("current blink(1) color: "+c);
     
     System.out.println("Turning off");
     blink1.off();

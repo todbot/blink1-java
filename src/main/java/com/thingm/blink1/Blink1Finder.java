@@ -24,7 +24,7 @@ public class Blink1Finder implements HidServicesListener {
   public static Blink1Finder getFinder() 
   { 
     if (finder == null) {
-          finder = new Blink1Finder();
+      finder = new Blink1Finder();
     }
     return finder;
   }
@@ -42,7 +42,6 @@ public class Blink1Finder implements HidServicesListener {
     // Start the services
     //System.out.println("Starting HID services.");
     //hidServices.start();
-
   }
 
   /**
@@ -95,14 +94,10 @@ public class Blink1Finder implements HidServicesListener {
    * @return Blink1 object or NULL if no device with that serial number found
    */
   public static Blink1 openBySerial(String serialNumber) {
-    Blink1 blink1 = null;
-    //System.out.printf("openBySerial:%s\n",serialNumber);
-    if( blink1SerialList == null ) {
-      listAll();
-    }
+    listAll();
     HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
     if( dev == null ) { return null; }
-    blink1 = new Blink1Hid4Java(dev);
+    Blink1 blink1 = new Blink1Hid4Java(dev);
     return blink1;
   }
   
@@ -112,16 +107,15 @@ public class Blink1Finder implements HidServicesListener {
    * @returns Blink1 object or NULL if no device with that id found
    */
   public static Blink1 openById( int id ) {
-    Blink1 blink1 = null;
+    listAll();
     int count = blink1SerialList.size();
     if( count == 0 || id >= count ) {
       return null;
     }
     String serialNumber = blink1SerialList.get(id);
-    
     HidDevice dev = hidServices.getHidDevice(vendorId, productId, serialNumber);
     if( dev == null ) { return null; }
-    blink1 = new Blink1Hid4Java(dev);
+    Blink1 blink1 = new Blink1Hid4Java(dev);
 
     return blink1;
   }
@@ -153,8 +147,8 @@ public class Blink1Finder implements HidServicesListener {
   @Override
   public void hidDeviceAttached(HidServicesEvent event) {
 
-    System.out.println("Device attached: " + event);
-
+    //System.out.println("Device attached: " + event);
+    
     // Add serial number when more than one device with the same
     // vendor ID and product ID will be present at the same time
     if (event.getHidDevice().isVidPidSerial(vendorId, productId, null)) {
@@ -167,14 +161,14 @@ public class Blink1Finder implements HidServicesListener {
   @Override
   public void hidDeviceDetached(HidServicesEvent event) {
 
-    System.err.println("Device detached: " + event);
+    //System.err.println("Device detached: " + event);
 
   }
 
   @Override
   public void hidFailure(HidServicesEvent event) {
 
-    System.err.println("HID failure: " + event);
+    //System.err.println("HID failure: " + event);
 
   }
 

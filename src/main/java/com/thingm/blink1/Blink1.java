@@ -14,8 +14,11 @@ import java.awt.Color;
 
 public abstract class Blink1 
 {
-  private static final byte reportId = 1;
-  private static final int reportLen = 8; //
+  public static final byte reportId = 1;
+  public static final byte reportLen = 8; //
+
+  public static final byte report2Id = 2;
+  public static final byte report2Len = 60;
 
   /**
    * Our serial number 
@@ -28,12 +31,19 @@ public abstract class Blink1
   public abstract void close();
 
   /**
-   *
+   * Send a USB HID feature report to blink(1). Implemented by subclass
+   * @param buffer  byte buffer of correct length for report (e.g. 8 for blink1)
+   *          with no reportId as the first byte 
+   * @param reportId the reportId to send the buffer on (usually 1 for blink1)
+   * @returns < 0 on error, or number of bytes received
    */
   public abstract int sendFeatureReport(byte[] buffer, byte reportId);
   
   /**
-   *
+   * Get a USB HID feature report to blink(1). Implemented by subclass
+   * @param buffer the byte buffer to write into, must be correct length for report
+   * @param reportId the reportId to get on
+   * @returns < 0 on error, or number of bytes received
    */
   public abstract int getFeatureReport(byte[] buffer, byte reportid);
   
@@ -68,6 +78,37 @@ public abstract class Blink1
    */
   public int setColor(Color c) {
     return this.setRGB( c.getRed(), c.getGreen(), c.getBlue() );
+  }
+
+  /**
+   * Get last color sent (current color
+   * @return The current color of the device as int, or <0 on error
+   */
+  public int getColorAsInt(int ledn) {
+    Color c = this.getColor(ledn);
+    int rc = 0;
+    if( c == null) { rc = -1; }
+    return rc;
+  }
+
+  public Color getColor() {
+    return this.getColor(0);
+  }
+  
+  public Color getColor(int ledn) {
+    //uint8_t bu = { blink1_report_id, 'r', 0,0,0, 0,0,ledn };
+    int rc;
+    byte[] buff = { (byte)'r', 0,0,0, 0,0,(byte)ledn,0};
+    rc = this.sendFeatureReport(buff,reportId);
+    rc = this.getFeatureReport(buff, reportId);
+    //System.out.println("BLINK1:getColor:"+Arrays.toString((buff)));
+    if( rc < 0 ) { return null;  }
+    int r = buff[2] & 0xff;
+    int g = buff[3] & 0xff;
+    int b = buff[4] & 0xff;
+    
+    Color c = new Color( r,g,b );
+    return c;
   }
 
   /**
