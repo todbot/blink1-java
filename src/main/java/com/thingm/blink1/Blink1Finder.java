@@ -131,15 +131,27 @@ public class Blink1Finder implements HidServicesListener {
     }
     @Override
     public int sendFeatureReport(byte[] buffer, byte reportId) {
-      return this.dev.sendFeatureReport(buffer, reportId);
+      int rc=-1;
+      try { 
+        rc = this.dev.sendFeatureReport(buffer, reportId);
+      } catch(Exception e ) {
+        System.err.println("Blink1.sendFeatureReport:"+e);
+      }
+      return rc;
     }
     @Override
     public int getFeatureReport(byte[] buffer, byte reportId) {
-      return this.dev.getFeatureReport(buffer, reportId);
+      int rc=-1;
+      try { 
+        return this.dev.getFeatureReport(buffer, reportId);
+      } catch(Exception e ) {
+        System.err.println("Blink1.getFeatureReport:"+e);
+      }
+      return rc;
     }
     public void close() {
       this.dev.close();
-      this.dev = null;
+      //this.dev = null;
     }
   }
 
