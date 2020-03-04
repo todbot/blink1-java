@@ -5,7 +5,7 @@
  *
  */
 
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 import java.util.Random;
 
 Blink1 blink1;
@@ -16,9 +16,9 @@ void setup()
 {
   frameRate(1);
 
-  blink1 = Blink1.open();
+  blink1 = Blink1Finder.open();
 
-  if( blink1.error() ) { 
+  if( blink1 == null ) { 
       println("uh oh, no Blink1 device found");
   }
 
@@ -38,7 +38,7 @@ void draw()
   fill(c);
   rect(0, 0, width, height);
 
-  blink1.setRGB( r, g, b );
-  
+  if( blink1!=null ) { 
+    blink1.setRGB( r, g, b );
+  }
 }
-

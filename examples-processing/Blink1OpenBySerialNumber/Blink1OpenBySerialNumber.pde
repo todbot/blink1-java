@@ -14,15 +14,26 @@
 import com.thingm.blink1.*;
 import java.awt.Color;
 
-String serialnum = "330A32F9";
+String serialnum = ""; // fill with serial number string, e.g. "330A32F9"
 
 void setup() {
 
+  if( serialnum.isEmpty() ) { 
+    serialnum = null;
+    println("no serial number specified, opening first blink(1)");
+    String[] serials = Blink1Finder.listAll();
+    if( serials.length > 0 ) { 
+      serialnum = serials[0];
+    }
+  } 
   Blink1 blink1 = Blink1Finder.openBySerial(serialnum);
 
   if ( blink1 == null) {
-    println("blink(1) with serial "+serialnum+" not found...");  
+    println("blink(1) with serial '"+serialnum+"' not found...");  
     return;
+  }
+  else { 
+    println("opened blink(1) '"+serialnum+"'");
   }
   
   blink1.setColor(Color.red);

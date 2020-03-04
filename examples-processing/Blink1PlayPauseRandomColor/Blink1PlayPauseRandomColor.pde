@@ -9,7 +9,7 @@
 //
 
 //import blink1 library
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 
 //name your blink1
 Blink1 myBlink1;
@@ -50,8 +50,8 @@ void setup()
   textFont(createFont("helvetica", 11));
   background(bgVar);
 
-  // intantiate your blink1
-  myBlink1 = Blink1.open();
+  // instantiate your blink1
+  myBlink1 = Blink1Finder.open();
 
   //is it there - see function, also runs on mouse release
   checkForBlink1();
@@ -143,7 +143,7 @@ void checkForBlink1() {
   //prepares it to recieve commands.
   if( myBlink1.error() ) {
     myBlink1.close();
-    myBlink1 = Blink1.open();
+    myBlink1 = Blink1Finder.open();
   }
   boolean b1error = myBlink1.error();
   

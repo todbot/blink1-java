@@ -30,15 +30,15 @@ void setup()
   size(300,300);
   frameRate(15);
 
-  String[] blink1_serials = Blink1Finder.findAll(); 
+  String[] blink1_serials = Blink1Finder.listAll(); 
   num_blink1s = blink1_serials.length;
 
  if( num_blink1s == 0 ) {
-    println("uh oh, no Blink1 device found");
+    println("uh oh, no blink(1) device found");
     num_blink1s = 1; // hack so div-by-zero doesn't bite
   }
   else { 
-    println("found "+ num_blink1s + " blink1 devices");
+    println("found "+ num_blink1s + " blink(1) devices");
   }
   rand = new Random();
 }
@@ -50,7 +50,7 @@ void randDisco()
     return;
   }
   nextMillis = millis() + 100;
-  fadeTime = 300;
+  fadeTime = 100;
 
   colorMode(HSB,255);
   c = color( random(255), 255,255);
@@ -59,11 +59,12 @@ void randDisco()
   background(0, 0);
   fill(c);
   rect(10, 10, width-20, height-20);
-
+  
+  int ledn = int(random(3)); //0,1,2
   blink1i = int(random(num_blink1s));
   // open up a blink1, send it a color, close it 
   blink1 = Blink1Finder.openById( blink1i );
-  blink1.fadeToRGB( fadeTime, int(red(c)), int(green(c)), int(blue(c)) );
+  blink1.fadeToRGB( fadeTime, int(red(c)), int(green(c)), int(blue(c)), ledn );
   blink1.close();
 
 }

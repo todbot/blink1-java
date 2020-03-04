@@ -1,5 +1,6 @@
 /*
- * Blink1ColorPatterns - make some pretty patterns with a mk2 with 18 LEDs.
+ * Blink1ColorPatterns - make some pretty patterns with 
+ * a mk2 or mk3 with 18 Neopxixel LEDs.
  *
  * 2013, Tod E. Kurt, http://thingm.com/ , http://todbot.com/blog/
  *

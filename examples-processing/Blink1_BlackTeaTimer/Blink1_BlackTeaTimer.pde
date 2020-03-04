@@ -13,7 +13,7 @@
  */
 
 //IMPORTS
-import thingm.blink1.*;
+import com.thingm.blink1.*;
 
 
 //DEBUGGING
@@ -86,7 +86,7 @@ Blink1 myBlink1;
 void setup() {
   println(cupSize);
   //SETUP ENVIRONMENT
-  size(int(myHeight), int(myWidth));
+  size(600,600); // must match mywidth,myheight
   frameRate(framerateVar);
   textFont(createFont("helvetica", lineHeight));
   textAlign(CENTER, TOP);
@@ -96,7 +96,7 @@ void setup() {
   drawBackground();
 
   //INITIATE BLINK 1
-  myBlink1 = Blink1.open();
+  myBlink1 = Blink1Finder.open();
   myBlink1.setRGB(0, 0, 0);
 
   //COLOR AND MESSAGE ARRAYS
