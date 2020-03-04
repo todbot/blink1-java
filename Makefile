@@ -62,7 +62,8 @@ help:
 	@echo "This Makefile has no default rule. Use one of the following:"
 	@echo "make javac ..... to compile the Java"
 	@echo "make jar ....... to build the jar"
-	@echo "make example.... to build the examples"
+	@echo "make examples... to build the examples"
+	@echo "make run-example EXAMPLE=Example1  to run example Example1"
 	@echo "make processing. to build the processing library"
 	@echo "make clean ..... to clean all built files"
 	@echo "make javadoc ... to make the javadoc"
@@ -88,15 +89,14 @@ msg:
 processing: processinglib
 processinglib: jar
 	rm -f $(PROCESSINGZIPNAME)
-	rm -rf processing
-	mkdir -p processing/blink1/library
-	mkdir -p processing/blink1/examples
-	mkdir -p processing/blink1/src
-	cp packaging/library.properties processing/blink1
-	cp -r lib/* processing/blink1/library
-#	cp -r examples-processing/* processing/blink1/examples
-#	zip --exclude \*application.\* --exclude \*~ --exclude .DS_Store --exclude \*zip -r $(PROCESSINGZIPNAME) com/thingm/blink1/*java
-	pushd processing && zip -r $(PROCESSINGZIPNAME).zip blink1 && popd
+	rm -rf build
+	mkdir -p build/blink1/library
+	mkdir -p build/blink1/examples
+	mkdir -p build/blink1/src
+	cp packaging/library.properties build/blink1
+	cp -r lib/* build/blink1/library
+	cp -r examples-processing/* build/blink1/examples
+	pushd build && zip -r $(PROCESSINGZIPNAME).zip blink1 && popd
 	@echo
 	@echo "now unzip $(PROCESSINGZIPNAME) into ~/Documents/Processing3/libraries"
 #	@echo "or maybe ln -s \`pwd\`/ ~/Documents/Processing/libraries/blink1"
@@ -108,7 +108,7 @@ javadoc:
 	cd ./docs/javadoc && javadoc -sourcepath ../../java thingm.blink1 && cd ../../java
 
 clean:
-	-rm lib/blink1.jar
+	-rm -rf build
 	-rm src/main/java/com/thingm/blink1/*.class
 	-rm examples/*.class
 
