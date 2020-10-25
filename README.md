@@ -1,19 +1,34 @@
 Java Library for blink(1)
 -------------------------
 
-If you are looking for a ready-to-run library for use in Processing or Java,
-download it by visiting this repository's releases page:
+### Build
 
-https://github.com/todbot/blink1-java/releases
+```
+./mvnw clean install
+```
 
-To try out the library via the command-line, see `blink1-tool-java.sh`.
+This builds a fat jar in: `blink1-library/target/blink1-library-jar-with-dependencies.jar`
 
-To build the library, see the Makefile.
-On most platforms you should be able to do `make jar`.
+### Examples
 
-This code was originally in the https://github.com/todbot/blink1 repository
-but has now been broken out into its own repo.
+Examples that use the library can be found in the blink1-examples module
 
+you can run an example from the command line (after building) with:
+
+```
+./run-example.sh Example<n>
+```
+
+(where `<n>` is: 0, 1, 2 or 3)
+
+ex:
+
+```
+./run-example.sh Example0
+Looking for blink(1) devices...
+blink(1)s found:
+i:0  serial:37ec9b94
+```
 
 ### Toy / Test Applications written in Processing Java ###
 
@@ -37,14 +52,3 @@ Download:
 Download:
 [(Mac OSX)](https://thingm.com/blink1/downloads/Blink1Test0-mac.zip) /
 [(Windows)](https://thingm.com/blink1/downloads/Blink1Test0-win.zip)
-
-
-
-##  Building blink1-java
-
-Mac OS X:
-- Need Java installed
-
-Windows:
-- Need Java installed
-- Must use MSYS2 shell (not Powershell or cmd)

@@ -1,8 +1,4 @@
-
-
-import com.thingm.blink1.*;
-
-import java.util.List;
+package com.thingm.blink1;
 
 public class Example0 {
   
@@ -10,8 +6,6 @@ public class Example0 {
    * Demonstrate listing all blink(1)s by serial number
    */
   public static void main(String args[]) {
-    
-    int rc;
     
     System.out.println("Looking for blink(1) devices...");
 
@@ -23,8 +17,8 @@ public class Example0 {
     }
     
     System.out.println("blink(1)s found:");
-    for( int i=0; i< serials.length; i++) { 
-      System.out.println("i:"+i+ "  serial:"+serials[i]);
+    for( int i=0; i < serials.length; i++) {
+      System.out.println("i:" + i + "  serial:" + serials[i]);
     }
 
     // in case you want to exit abruptly, shutdown first

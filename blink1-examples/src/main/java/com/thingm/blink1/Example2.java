@@ -1,8 +1,7 @@
+package com.thingm.blink1;
 
-import com.thingm.blink1.*;
-
-import java.util.*;
-import java.awt.Color;
+import java.awt.*;
+import java.util.Random;
 
 public class Example2 {
 

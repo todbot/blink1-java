@@ -45,7 +45,7 @@ public abstract class Blink1
    * @param reportId the reportId to get on
    * @returns < 0 on error, or number of bytes received
    */
-  public abstract int getFeatureReport(byte[] buffer, byte reportid);
+  public abstract int getFeatureReport(byte[] buffer, byte reportId);
   
   
   /**
@@ -197,7 +197,7 @@ public abstract class Blink1
    * Enable or disable serverdown / servertickle mode
    * @param enable true = turn on serverdown mode, false = turn it off
    * @param millis milliseconds until light pattern plays if not updated 
-   * @param stayLitt true/false to stay on when serverdown re-enabled or go off
+   * @param stayLit true/false to stay on when serverdown re-enabled or go off
    * @param start pattern line to start from
    * @param end pattern line to end at
    * @returns blink1_command response code, -1 == fail 
