@@ -30,6 +30,23 @@ blink(1)s found:
 i:0  serial:37ec9b94
 ```
 
+There's also a basic program to turn off the blink1 or set it to a specific RGB value:
+
+```
+./run-example.sh OnOffColor
+Turning off blink1.
+```
+
+```
+./run-example.sh OnOffColor 255 0 0
+Setting R(255)G(0)B(0) on blink1
+```
+
+```
+./run-example.sh OnOffColor 255 bad 255
+One or more of the rgb params is not a number between 0 and 255: r(255), g(bad), b(255)
+```
+
 ### Toy / Test Applications written in Processing Java ###
 
 These "toy" or "test" applications for just playing around with your blink(1):

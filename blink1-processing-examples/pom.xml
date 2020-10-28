@@ -42,6 +42,7 @@
                         <configuration>
                             <target>
                                 <mkdir dir="target/Blink1/library" />
+                                <delete dir="${processing.libraries.folder}/Blink1"/>
                             </target>
                         </configuration>
                         <goals>
