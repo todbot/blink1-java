@@ -22,11 +22,11 @@ import thingm.blink1.*;
 static final boolean debug = true;
 
 // your Oauth info
-static String OAuthConsumerKey = "RFYIxhaoqkXJgfnbqUv8PQ";
-static String OAuthConsumerSecret = "pXSVrAvFhFMXbuKe0RVaL7bJ42eQYGjNkK6oqNNvlk";
+static String OAuthConsumerKey = "xxxx";
+static String OAuthConsumerSecret = "xxxx";
 // your Access Token info
-static String AccessToken = "23659748-gMN9Qf6wy9C2F9HNPcHQ10vcNeBJK5MCoZV0CWM";
-static String AccessTokenSecret = "m93E2BIdCmwKSycmEyjR2EpLfKCkQGFSAU9278LygU";
+static String AccessToken = "xxxx";
+static String AccessTokenSecret = "xxxx";
 
 
 Blink1 blink1;
