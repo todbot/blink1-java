@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>com.thingm.blink1</groupId>
-    <artifactId>blink1-examples</artifactId>
+    <artifactId>blink1-java-examples</artifactId>
     <version>2.1-SNAPSHOT</version>
 
-    <name>blink1-examples</name>
+    <name>blink1-java-examples</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +31,6 @@
     </dependencies>
 
     <build>
-        <finalName>blink1-examples</finalName>
+        <finalName>blink1-java-examples</finalName>
     </build>
 </project>

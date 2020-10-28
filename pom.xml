@@ -19,6 +19,7 @@
 
   <modules>
     <module>blink1-library</module>
-    <module>blink1-examples</module>
+    <module>blink1-java-examples</module>
+    <module>blink1-processing-examples</module>
   </modules>
 </project>

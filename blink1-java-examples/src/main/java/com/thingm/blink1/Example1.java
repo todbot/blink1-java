@@ -1,6 +1,6 @@
 package com.thingm.blink1;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class Example1 {
   
