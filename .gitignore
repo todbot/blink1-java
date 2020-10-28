@@ -28,3 +28,7 @@ thingm_blink1_Blink1.h
 
 # the build dir
 build
+
+target
+.idea
+*.iml

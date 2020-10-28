@@ -1,9 +1,0 @@
-Main-Class: com.thingm.blink1.Blink1
-Name: com/thingm/blink1
-Specification-Title: blink(1) USB LED API classes
-Specification-Version: 1.0
-Specification-Vendor: ThingM Corporation
-Implementation-Title:  com.thingm.blink1
-Implementation-Version: build1
-Implementation-Vendor: ThingM Corporation
-

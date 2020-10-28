@@ -1,8 +1,4 @@
-
-
-import com.thingm.blink1.*;
-
-import java.util.*;
+package com.thingm.blink1;
 
 public class Example3 {
   
@@ -24,7 +20,7 @@ public class Example3 {
 
     for( int i = 0; i< blink1.getPatternLineMaxCount(); i++ ) {
       PatternLine p = blink1.readPatternLine(i);
-      System.out.printf("pattline: %i %s\n",i,p);
+      System.out.printf("pattline: %d %s\n",i,p);
     }
         
     PatternLine[] mypattern = {

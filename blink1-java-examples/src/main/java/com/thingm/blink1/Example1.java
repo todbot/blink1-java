@@ -1,8 +1,5 @@
+package com.thingm.blink1;
 
-
-import com.thingm.blink1.*;
-
-import java.util.List;
 import java.awt.Color;
 
 public class Example1 {
@@ -18,7 +15,6 @@ public class Example1 {
 
 
     Blink1 blink1 = Blink1Finder.open();
-    //Blink1 blink1 = Blink1Finder.openBySerial("20003299");
 
     if( blink1 == null ) { 
       System.out.println("no blink(1) found, next call will return error ");
