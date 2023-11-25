@@ -239,8 +239,8 @@ public abstract class Blink1
     this.sendFeatureReport(buff, reportId);
     this.getFeatureReport(buff, reportId);
     //System.out.println("BLINK1:getVersion:"+Arrays.toString((buff)));
-    int vh = Character.getNumericValue(buff[3]);
-    int vl = Character.getNumericValue(buff[4]);
+    int vh = Character.getNumericValue(buff[2]);
+    int vl = Character.getNumericValue(buff[3]);
     int ver = (vh*100) + vl;
     return ver;
   }
@@ -329,10 +329,10 @@ public abstract class Blink1
     if( rc < 0 ) { return null; }
     
     // java signed bytes are stupid
-    int fadeMillis = ((((buf[5] & 0xff)<<8) | (buf[6] & 0xff)) * 10);
-    int r = buf[2] & 0xff;
-    int g = buf[3] & 0xff;
-    int b = buf[4] & 0xff;
+    int fadeMillis = ((((buf[4] & 0xff)<<8) | (buf[5] & 0xff)) * 10);
+    int r = buf[1] & 0xff;
+    int g = buf[2] & 0xff;
+    int b = buf[3] & 0xff;
     int ledn = 0;
 
     PatternLine pattline = new PatternLine(fadeMillis, r,g,b, ledn); 
